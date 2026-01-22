@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 
-# --- Configuration ---
+# --- Configuration (New Token Updated) ---
 API_TOKEN = '8377346830:AAFVtsPT3BHAWS9Vtl6pjj2BanW9LnhGtII'
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -21,7 +21,7 @@ def main_menu_markup():
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    # နာမည်အပြည့်အစုံပေါ်ရန် full_name ကိုသုံးထားပါသည်
+    # နာမည်အပြည့်အစုံ (First Name + Last Name) ပေါ်ရန် ပြင်ဆင်ထားသည်
     full_name = f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip()
     welcome_text = (
         f"မင်္ဂလာရှိအပေါင်းနဲ့ပြည့်စုံသောနေ့လေးတစ်နေ့ပါ {full_name} ခင်ဗျာ။\n\n"
@@ -32,7 +32,9 @@ def start(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-    # --- ၁။ MLBB Diamond Servers ---
+    full_name = f"{call.from_user.first_name} {call.from_user.last_name or ''}".strip()
+
+    # --- MLBB Servers ---
     if call.data == "mlbb_servers":
         markup = types.InlineKeyboardMarkup(row_width=1)
         markup.add(
@@ -45,7 +47,7 @@ def callback_query(call):
         )
         bot.edit_message_text("Server ကိုရွေးချယ်ပါ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
-    # --- ၂။ MLBB Prices (Myanmar Server) ---
+    # --- MLBB Prices (Myanmar Server) ---
     elif call.data == "ml_mm":
         price = (
             "MLBB Normal sever (🇲🇲)\n"
@@ -59,73 +61,68 @@ def callback_query(call):
         bot.edit_message_text(price, call.message.chat.id, call.message.message_id, 
                               reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔙 Back", callback_data="mlbb_servers")))
 
-    # --- ၃။ Premium ဝန်ဆောင်မှုများ ဈေးနှုန်း ---
+    # --- Premium Prices ---
     elif call.data == "premium_info":
         markup = types.InlineKeyboardMarkup(row_width=1)
+        # ပုံထဲမှ ဈေးနှုန်းများအတိုင်း ထည့်သွင်းပေးထားပါသည်
         markup.add(
-            types.InlineKeyboardButton("Canva Edu (1000Ks)", callback_data="p_info"),
-            types.InlineKeyboardButton("Capcut Premium (3000Ks)", callback_data="p_info"),
-            types.InlineKeyboardButton("Alight Motion (2000Ks)", callback_data="p_info"),
+            types.InlineKeyboardButton("Canva Edu - 1000Ks", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("Capcut Premium - 3000Ks", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("Alight Motion - 2000Ks", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("Wink Premium - 2000Ks", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("Inshot Premium - 2000Ks", url="https://t.me/khantzip"),
             types.InlineKeyboardButton("🔙 Back", callback_data="back_home")
         )
         bot.edit_message_text("ရရှိနိုင်သော Premium ဝန်ဆောင်မှုများနှင့် ဈေးနှုန်းများ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
-    # --- ၄။ တခြားဝယ်ယူရန် ---
-    elif call.data == "others":
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        markup.add(
-            types.InlineKeyboardButton("💎 MLBB Diamond", callback_data="mlbb_servers"),
-            types.InlineKeyboardButton("♟️ Magic Chess", callback_data="magic_chess"),
-            types.InlineKeyboardButton("🔙 Back", callback_data="back_home")
-        )
-        bot.edit_message_text("တခြားဝယ်ယူနိုင်သော အမျိုးအစားများ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
-
-    # --- ၅။ Magic Chess ဈေးနှုန်း ---
+    # --- Magic Chess Prices ---
     elif call.data == "magic_chess":
         price = (
             "Magic Chess\nweekly pass ➡️ 6500 Ks\n50+50 ➡️ 3500Ks | 150+150 ➡️ 10000Ks |\n"
             "250+250 ➡️ 17000Ks | 500+500 ➡️ 32000Ks\n\n"
             "5➡️550 | 11➡️1000 | 19➡️1500 | 22➡️2000 |\n59➡️4500 | 86➡️6000 | 172➡️12000\n"
-            "257➡️17000 | 296➡️20000 | 344➡️24000 |\n408➡️28000 | 516➡️35000 | 706➡️45000\n\n"
+            "257➡️17000 | 296➡️20000 | 344➡️24000 |\n408➡️28000 | 516➡️35000 | 706➡️45000 |\n"
+            "875➡️55000 | 1346➡️79000 | 1825➡️105000 |\n2010➡️120000 | 2195➡️130000 | 3688➡️205000 |\n"
+            "4830➡️270000 | 5532➡️310000 | 9288➡️500000\n\n"
             "Admin 👉 @khantzip"
         )
         bot.edit_message_text(price, call.message.chat.id, call.message.message_id, 
                               reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔙 Back", callback_data="others")))
 
-    # --- Back to Home ---
+    # --- Others Menu ---
+    elif call.data == "others":
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        markup.add(
+            types.InlineKeyboardButton("💎 MLBB Diamond", callback_data="mlbb_servers"),
+            types.InlineKeyboardButton("👤 Facebook account", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("💰 Mbccs", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("📧 Gmail account", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("♟️ Magic chess", callback_data="magic_chess"),
+            types.InlineKeyboardButton("🔙 Back", callback_data="back_home")
+        )
+        bot.edit_message_text("တခြားဝယ်ယူနိုင်သော အမျိုးအစားများ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
+
     elif call.data == "back_home":
-        full_name = f"{call.from_user.first_name} {call.from_user.last_name or ''}".strip()
         text = f"မင်္ဂလာရှိအပေါင်းနဲ့ပြည့်စုံသောနေ့လေးတစ်နေ့ပါ {full_name} ခင်ဗျာ။\n\nကိုယ်သိချင်တာကို အားမနာတမ်း နှစ်သက်ရာ ရွေးချယ်ပါ👇"
         bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=main_menu_markup())
 
-    # --- သင်တန်းများ ---
+    # --- Additional Menus ---
     elif call.data == "courses":
         markup = types.InlineKeyboardMarkup(row_width=1)
         markup.add(
-            types.InlineKeyboardButton("💎 Mlbb diamond ရောင်းနည်း (10000Ks)", url="https://t.me/khantzip"),
-            types.InlineKeyboardButton("👤 FB Account သစ်ဖွင့်နည်း (10000Ks)", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("💎 Mlbb diamond ရောင်းနည်း - 10000Ks", url="https://t.me/khantzip"),
+            types.InlineKeyboardButton("👤 FB Account သစ်ဖွင့်နည်း - 10000Ks", url="https://t.me/khantzip"),
             types.InlineKeyboardButton("🔙 Back", callback_data="back_home")
         )
-        bot.edit_message_text("သင်တန်းကြေးနှင့် အသေးစိတ်သိလိုပါက ရွေးချယ်ပါ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
+        bot.edit_message_text("သင်တန်းဈေးနှုန်းများ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
-    # --- ယုံကြည်ရသူများ ---
     elif call.data == "trusted_sellers":
-        text = "လူအများအလိမ်မခံရအောင် ကျွန်တော်သိတဲ့သူများကိုညွှန်းပေးထားပါတယ်"
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        markup.add(
-            types.InlineKeyboardButton("🚌 ရန်ကုန်အဝေးပြေးလက်မှတ်", url="https://t.me/khantzip"),
-            types.InlineKeyboardButton("🔙 Back", callback_data="back_home")
-        )
-        bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=markup)
+        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔙 Back", callback_data="back_home"))
+        bot.edit_message_text("ယုံကြည်ရသူများစာရင်းကို Admin ထံ မေးမြန်းနိုင်ပါသည်", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
-    # --- ဇာတ်ကားကြည့်ရန် ---
     elif call.data == "movies_main":
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        markup.add(
-            types.InlineKeyboardButton("📺 ဇာတ်ကားအစုံ", url="https://t.me/khantzipmainmovie"),
-            types.InlineKeyboardButton("🔙 Back", callback_data="back_home")
-        )
-        bot.edit_message_text("ကြည့်ရှုလိုသော Channel ကို ရွေးချယ်ပါ 👇", call.message.chat.id, call.message.message_id, reply_markup=markup)
+        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔙 Back", callback_data="back_home"))
+        bot.edit_message_text("ဇာတ်ကား Channel များသို့ Admin ထံမှ link တောင်းယူနိုင်ပါသည်", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
 bot.polling()
         
