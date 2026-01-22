@@ -28,7 +28,10 @@ def get_sheet_data():
         return []
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = "မင်္ဂလာပါ Khant Zip ခင်ဗျာ။ ✨\nကိုယ်သိချင်တာကို အောက်မှာ ရွေးချယ်ပါ👇"
+    text = (
+    "မင်္ဂလာရှိအပေါင်းနဲ့ ပြည့်စုံသောနေ့လေးတစ်နေ့ပါ Khant Zip မှ ကြိုဆိုပါတယ် ✨\n"
+    "ကိုယ်သိချင်တာကို အောက်က Button လေးတွေမှာ အားမနာတမ်း နှိပ်ပြီး ကြည့်ရှုနိုင်ပါတယ်ခင်ဗျာ 👇"
+    )
     keyboard = [
         [InlineKeyboardButton("🎬 ဇာတ်ကားကြည့်ရန်", callback_data='movies'), InlineKeyboardButton("📱 Mod App များ", url='https://t.me/khantzip')],
         [InlineKeyboardButton("✅ ယုံကြည်ရသူများ", callback_data='trusted'), InlineKeyboardButton("💎 Pro/Premium များ", callback_data='premium')],
