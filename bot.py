@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 
 # --- Configuration ---
-API_TOKEN = '8377346830:AAFVtsPT3BHAWS9Vtl6pjj2BanW9LnhGtII'
+API_TOKEN = '8377346830:AAGVWfasXHc2AP3Q_z8VyT3WG0GyBer6Sh0'
 bot = telebot.TeleBot(API_TOKEN)
 ADMIN_ACCOUNT = "@khantzip"
 
