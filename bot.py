@@ -1,58 +1,58 @@
-import os
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 
-# သင့် Bot Token
+# --- CONFIGURATION ---
 TOKEN = '8377346830:AAFVtsPT3BHAWS9Vtl6pjj2BanW9LnhGtII'
+ADMIN_ID = 5334758537  # <--- ဒီနေရာမှာ @userinfobot ကရတဲ့ သင့် ID ကို အစားထိုးပါ
 
-# Bot Start လုပ်တဲ့အခါ ပို့မယ့်စာနဲ့ Button များ
+# ခလုတ်များ၏ အချက်အလက်များ
+buttons_data = {
+    "btn_1": {"name": "🎬 ဇာတ်ကားကြည့်မယ်", "text": "ဇာတ်ကားကြည့်ရန် အောက်ပါလင့်ကို နှိပ်ပါ", "url": "https://t.me/khantzip"},
+    "btn_2": {"name": "📚 သင်တန်းများ", "text": "လက်ရှိတက်ရောက်နိုင်သော သင်တန်းများမှာ...", "url": "https://t.me/khantzip"},
+    "btn_3": {"name": "👨‍💻 Admin ဆက်သွယ်ရန်", "text": "အကူအညီလိုအပ်ပါက မေးမြန်းနိုင်ပါသည်", "url": "https://t.me/khantzip"}
+}
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_name = update.effective_user.full_name
+    keyboard = []
+    for key, data in buttons_data.items():
+        keyboard.append([InlineKeyboardButton(data["name"], url=data["url"])])
     
-    # သင်ပေးထားတဲ့ Logo ပုံကို စာနဲ့အတူ ပို့ပေးပါမယ်
-    welcome_text = (
-        f"မင်္ဂလာရှိအပေါင်းနဲ့ပြည့်စုံသောနေ့လေးတစ်နေ့ပါ {user_name} ခင်ဗျာ။\n\n"
-        "Khantzip bot ကနေ ကြိုဆိုပါတယ် ✨\n"
-        "ကိုယ်သိချင်တာကို အားမနာတမ်း နှစ်သက်ရာ ရွေးချယ်ပါ👇"
-    )
+    if update.effective_user.id == ADMIN_ID:
+        keyboard.append([InlineKeyboardButton("⚙️ Admin Panel (ခလုတ်ပြင်ရန်)", callback_data='admin_panel')])
 
-    # Buttons ဆောက်ခြင်း
-    keyboard = [
-        [
-            InlineKeyboardButton("🎓 ရနိုင်သောသင်တန်းများ", callback_data='courses'),
-            InlineKeyboardButton("📶 ရနိုင်သော MB/Min ဈေးနှုန်း", callback_data='data_price')
-        ],
-        [
-            InlineKeyboardButton("💎 Pro/Premium ဈေးများ", callback_data='premium_price'),
-            InlineKeyboardButton("✅ 100% ယုံကြည်စိတ်ချရသူများ", callback_data='trusted')
-        ],
-        [
-            InlineKeyboardButton("👨‍💻 Admin နဲ့ စကားပြောမယ်", url='https://t.me/kkzawbot') # သင့် Username ပြောင်းထားပေးပါတယ်
-        ]
-    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Khantzip Bot မှ ကြိုဆိုပါတယ်ဗျာ။", reply_markup=reply_markup)
 
-    await update.message.reply_text(text=welcome_text, reply_markup=reply_markup)
-
-# ခလုတ်တွေနှိပ်ရင် စာပြန်ဖို့
-async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def admin_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    
-    if query.data == 'courses':
-        await query.message.reply_text(text="📚 လက်ရှိတက်ရောက်နိုင်သော သင်တန်းများမှာ... \n(ဒီနေရာမှာ သင်တန်းစာရင်းတွေ ပြန်ဖြည့်နိုင်ပါတယ်)")
-    elif query.data == 'data_price':
-        await query.message.reply_text(text="📶 အသက်သာဆုံး MB/Min ဈေးနှုန်းများမှာ... \n(ဒီနေရာမှာ ဈေးနှုန်းတွေ ပြန်ဖြည့်နိုင်ပါတယ်)")
-    elif query.data == 'premium_price':
-        await query.message.reply_text(text="💎 Pro/Premium ဝန်ဆောင်မှု ဈေးနှုန်းများမှာ... \n(ဒီနေရာမှာ ဈေးနှုန်းတွေ ပြန်ဖြည့်နိုင်ပါတယ်)")
-    elif query.data == 'trusted':
-        await query.message.reply_text(text="✅ ကျွန်ုပ်တို့သည် 100% ယုံကြည်စိတ်ချရသော ဝန်ဆောင်မှုများကို ပေးအပ်နေပါသည်။")
+    keyboard = [[InlineKeyboardButton(f"ပြင်မယ်: {data['name']}", callback_data=f"setup_{key}")] for key, data in buttons_data.items()]
+    await query.message.edit_text("ဘယ်ခလုတ်ကို ပြင်ချင်ပါသလဲ?", reply_markup=InlineKeyboardMarkup(keyboard))
+
+async def handle_setup(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    btn_key = query.data.replace('setup_', '')
+    context.user_data['editing_btn'] = btn_key
+    await query.message.reply_text(f"ယခု '{buttons_data[btn_key]['name']}' ကို ပြင်နေပါသည်။\n\nပုံစံ: ခလုတ်နာမည် | ပေါ်မယ့်စာ | လင့်ခ်")
+
+async def update_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id == ADMIN_ID and 'editing_btn' in context.user_data:
+        try:
+            btn_key = context.user_data['editing_btn']
+            new_data = update.message.text.split('|')
+            buttons_data[btn_key]['name'], buttons_data[btn_key]['text'], buttons_data[btn_key]['url'] = [i.strip() for i in new_data]
+            del context.user_data['editing_btn']
+            await update.message.reply_text("✅ အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ။")
+        except:
+            await update.message.reply_text("❌ ပုံစံမမှန်ပါ။ နာမည် | စာ | လင့်ခ် ပုံစံအတိုင်း ပို့ပေးပါ။")
 
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TOKEN).build()
-    
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button_click))
-    
-    print("Khantzip Bot is running...")
+    app.add_handler(CallbackQueryHandler(admin_panel, pattern='^admin_panel$'))
+    app.add_handler(CallbackQueryHandler(handle_setup, pattern='^setup_'))
+    app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), update_button))
     app.run_polling()
+    
