@@ -6,9 +6,9 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 
 # --- CONFIGURATION ---
 TOKEN = '8377346830:AAFVtsPT3BHAWS9Vtl6pjj2BanW9LnhGtII'
-SHEET_NAME = 'Khantzip_Prices' 
+SHEET_NAME = 'Khantzip_Prices'
+ADMIN_ID = 7072756798 # သင့် ID
 
-# Google Sheets Credentials
 CREDENTIALS_DICT = {
   "type": "service_account",
   "project_id": "khantzipbot",
@@ -21,7 +21,8 @@ def get_sheet_data():
         scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
         creds = Credentials.from_service_account_info(CREDENTIALS_DICT, scopes=scope)
         client = gspread.authorize(creds)
-        sheet = client.open(SHEET_NAME).sheet1
+        # Tab နာမည် 'Khantzip_Prices' ကို ရှာသည်
+        sheet = client.open(SHEET_NAME).worksheet(SHEET_NAME)
         return sheet.get_all_records()
     except Exception as e:
         logging.error(f"Sheet Error: {e}")
@@ -29,14 +30,19 @@ def get_sheet_data():
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = (
-    "မင်္ဂလာရှိအပေါင်းနဲ့ ပြည့်စုံသောနေ့လေးတစ်နေ့ပါ Khant Zip မှ ကြိုဆိုပါတယ် ✨\n"
-    "ကိုယ်သိချင်တာကို အောက်က Button လေးတွေမှာ အားမနာတမ်း နှိပ်ပြီး ကြည့်ရှုနိုင်ပါတယ်ခင်ဗျာ 👇"
+        "မင်္ဂလာရှိအပေါင်းနဲ့ ပြည့်စုံသောနေ့လေးတစ်နေ့ပါ Khant Zip ခင်ဗျာ ✨\n\n"
+        "Khantzip bot ကနေ ကြိုဆိုပါတယ် ✨\n"
+        "ကိုယ်သိချင်တာကို အားမနာတမ်း အောက်မှာ ရွေးချယ်ပါ 👇"
     )
     keyboard = [
         [InlineKeyboardButton("🎬 ဇာတ်ကားကြည့်ရန်", callback_data='movies'), InlineKeyboardButton("📱 Mod App များ", url='https://t.me/khantzip')],
         [InlineKeyboardButton("✅ ယုံကြည်ရသူများ", callback_data='trusted'), InlineKeyboardButton("💎 Pro/Premium များ", callback_data='premium')],
         [InlineKeyboardButton("🤵 Admin နဲ့ စကားပြောမယ်", url='https://t.me/khantzip')]
     ]
+    # Admin အတွက် သီးသန့် Button ထည့်ခြင်း
+    if update.effective_user.id == ADMIN_ID:
+        keyboard.append([InlineKeyboardButton("⚙️ Admin Settings", callback_data='admin_panel')])
+
     reply_markup = InlineKeyboardMarkup(keyboard)
     if update.message: await update.message.reply_text(text, reply_markup=reply_markup)
     else: await update.callback_query.message.edit_text(text, reply_markup=reply_markup)
@@ -48,9 +54,9 @@ async def handle_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == 'premium':
         data = get_sheet_data()
         if not data:
-            await query.message.edit_text("⚠️ ဈေးနှုန်းဒေတာ မရှိသေးပါ။ Sheet ထဲမှာ Item တွေ ဖြည့်ပေးပါ။", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙", callback_data='back')]]))
+            await query.message.reply_text("⚠️ Sheet ထဲမှာ Header (Item, Information) တွေကို မှန်အောင် အရင်ပြင်ပေးပါ။")
             return
-        kb = [[InlineKeyboardButton(row['Item'], callback_data=f"info_{row['Item']}")] for row in data]
+        kb = [[InlineKeyboardButton(row['Item'], callback_data=f"info_{row['Item']}")] for row in data if row['Item']]
         kb.append([InlineKeyboardButton("🔙 နောက်သို့", callback_data='back')])
         await query.message.edit_text("သိလိုသော အမျိုးအစားကို ရွေးပါ 👇", reply_markup=InlineKeyboardMarkup(kb))
 
@@ -59,11 +65,16 @@ async def handle_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data = get_sheet_data()
         for row in data:
             if str(row['Item']) == item_name:
-                info = f"✨ {row['Item']} ✨\n\n{row['Information']}\n\nAdmin 👉 @khantzip"
-                await query.message.edit_text(info, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙", callback_data='premium')]]))
+                info_text = f"✨ {row['Item']} ✨\n\n{row['Information']}\n\nAdmin 👉 @khantzip"
+                # ပုံ URL ရှိရင် ပုံနဲ့တွဲပြမယ်
+                img_url = row.get('Image_URL')
+                if img_url and img_url.startswith('http'):
+                    await query.message.reply_photo(photo=img_url, caption=info_text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙", callback_data='premium')]]))
+                else:
+                    await query.message.edit_text(info_text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙", callback_data='premium')]]))
 
     elif query.data == 'trusted':
-        info = "🚌 အောင်မင်္ဂလာအဝေးပြေး\n\n၁။ ဦးကျော်သူ - 09254001853\n၂။ မအေးသန်း - 09983398618"
+        info = "🚌 ယုံကြည်ရသူများစာရင်း...\n၁။ Admin Khant Zip\n၂။ Trusted Seller List..."
         await query.message.edit_text(info, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙", callback_data='back')]]))
 
     elif query.data == 'back': await start(update, context)
@@ -73,3 +84,4 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_click))
     app.run_polling()
+  
