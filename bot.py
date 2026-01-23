@@ -88,56 +88,7 @@ def callback_listener(call):
         markup.add(types.InlineKeyboardButton("🔙 Back", callback_data="others"))
         bot.edit_message_text("Server ကို ရွေးချယ်ပါ 👇", cid, mid, reply_markup=markup)
 
-    # --- Malaysia & Singapore (🇲🇾🇸🇬) ---
-elif call.data == "ml_mysg":
-    text = (
-        "Malaysia & Singapore ( 🇲🇾🇸🇬 )\n"
-        "weekly pass sg  ➡️ 8600Ks\n"
-        "weekly pass my  ➡️ 8500Ks\n"
-        "50+50  ➡️ 4500Ks\n"
-        "150+150  ➡️ 13000Ks\n"
-        "250+250  ➡️ 21000Ks\n"
-        "500+500  ➡️ 42000Ks\n\n"
-        "14➡️1500Ks | 28➡️2500Ks | 42➡️4000Ks\n"
-        "56➡️5500Ks | 70➡️7000Ks | 84➡️8500Ks\n"
-        "112➡️11000Ks | 140➡️14000Ks | 154➡️16000Ks\n"
-        "210➡️20000Ks | 284➡️25000Ks | 355➡️30000Ks\n"
-        "429➡️35000Ks | 569➡️46000Ks | 716➡️57000Ks\n"
-        "856➡️68000Ks | 898➡️73000Ks | 1000➡️82000Ks\n"
-        "1084➡️89000Ks | 1145➡️95000Ks | 1284➡️110000Ks\n"
-        "1446➡️130000Ks | 2162➡️180000Ks | 2976➡️230000Ks\n"
-        "3692➡️285000Ks | 4422➡️335000Ks | 5952➡️440000Ks\n"
-        "6012➡️450000Ks | 7502➡️550000Ks | 8948➡️660000Ks\n"
-        "10478➡️760000Ks | 11924➡️870000Ks | 13454➡️960000Ks\n"
-        "15004➡️1080000Ks\n\n"
-        "Admin 👉 @khantzip"
-    )
-    bot.send_message(cid, text)
-
-# --- Philippines ( 🇵🇭 ) ---
-elif call.data == "ml_ph":
-    text = (
-        "Philippines ( 🇵🇭 )\n"
-        "weekly pass  ➡️ 6600Ks\n"
-        "50+50  ➡️ 4100Ks\n"
-        "150+150  ➡️ 11000Ks\n"
-        "250+250  ➡️ 17000Ks\n"
-        "500+500 ➡️  35000Ks\n\n"
-        "5➡️700Ks | 11➡️1100Ks | 22➡️2000Ks\n"
-        "56➡️4200Ks | 112➡️7500Ks | 223➡️15000Ks\n"
-        "336➡️22000Ks | 570➡️35000Ks | 1163➡️69000Ks\n"
-        "2398➡️140000Ks | 6042➡️330000Ks\n\n"
-        "Admin 👉 @khantzip"
-    )
-    bot.send_message(cid, text)
-
-# --- Outlook/Hotmail & Mbccs ---
-elif call.data == "outlook":
-    bot.send_message(cid, "Outlook/Hotmail\n1 account 5000ks\nAvailable 30\nစိတ်ကြိုက်ရ\n\nAdmin 👉 @khantzip")
-
-elif call.data == "mbccs":
-    bot.send_message(cid, "လူကြီးမင်းရဲ့ ကိုယ်ပိုင်မိုင်တဲလ်ဖုန်းနံပါတ်နဲ့\n40000ks\n\nAdmin 👉 @khantzip")
-# --- Server Prices (အကုန်ထည့်ပေးထားပါတယ်) ---
+    # --- Server Prices (အကုန်ထည့်ပေးထားပါတယ်) ---
     elif call.data == "ml_mm":
         bot.send_message(cid, "MLBB Normal sever (🇲🇲)\nweekly pass ➡️ 5700Ks\n50+50 ➡️ 3100Ks\n150+150 ➡️ 10000Ks\n250+250 ➡️ 16000Ks\n500+500 ➡️ 31000Ks\n\n3➡️500Ks / 5➡️700Ks / 11➡️1000Ks / 22➡️2000Ks / 33➡️2800Ks / 44➡️3600Ks / 55➡️4000Ks / 86➡️5500Ks / 110➡️7000Ks / 172➡️11000Ks / 257➡️15000Ks / 343➡️20000Ks / 429➡️25000Ks / 514➡️30000Ks / 600➡️35000Ks / 706➡️40000Ks / 878➡️50000Ks / 963➡️55000Ks / 1049➡️60000Ks / 1135➡️65000Ks / 1412➡️80000Ks / 2195➡️120000Ks / 3688➡️200000Ks / 5532➡️300000Ks / 9288➡️480000Ks\n\nAdmin 👉 @khantzip")
     elif call.data == "ml_ru":
@@ -159,4 +110,4 @@ elif call.data == "mbccs":
         bot.edit_message_text(call.message.text, cid, mid, reply_markup=main_menu())
 
 bot.polling(none_stop=True)
-    
+        
