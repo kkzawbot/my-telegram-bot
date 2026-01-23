@@ -108,6 +108,49 @@ def callback_listener(call):
 
     elif call.data == "back_main":
         bot.edit_message_text(call.message.text, cid, mid, reply_markup=main_menu())
+    # --- Malaysia & Singapore (🇲🇾🇸🇬) ---
+    elif call.data == "ml_mysg":
+        text = (
+            "malaysia & singapore ( 🇲🇾🇸🇬 )\n"
+            "weekly pass sg  ➡️ 8600Ks\nweekly pass my  ➡️ 8500Ks\n"
+            "50+50  ➡️ 4500Ks\n150+150  ➡️ 13000Ks\n250+250  ➡️ 21000Ks\n500+500  ➡️ 42000Ks\n\n"
+            "14➡️1500Ks | 28➡️2500Ks | 42➡️4000Ks\n56➡️5500Ks | 70➡️7000Ks | 84➡️8500Ks\n"
+            "112➡️11000Ks | 140➡️14000Ks | 154➡️16000Ks\n210➡️20000Ks | 284➡️25000Ks\n"
+            "355➡️30000Ks | 429➡️35000Ks | 569➡️46000Ks\n716➡️57000Ks | 856➡️68000Ks\n"
+            "898➡️73000Ks | 1000➡️82000Ks | 1084➡️89000Ks\n1145➡️95000Ks | 1284➡️110000Ks\n"
+            "1446➡️130000Ks | 2162➡️180000Ks | 2976➡️230000Ks\n3692➡️285000Ks | 4422➡️335000Ks\n"
+            "5952➡️440000Ks | 6012➡️450000Ks | 7502➡️550000Ks\n8948➡️660000Ks | 10478➡️760000Ks\n"
+            "11924➡️870000Ks | 13454➡️960000Ks | 15004➡️1080000Ks\n\nAdmin 👉 @khantzip"
+        )
+        bot.send_message(cid, text)
+
+    # --- Philippines ( 🇵🇭 ) ---
+    elif call.data == "ml_ph":
+        text = (
+            "philippines ( 🇵🇭 )\n"
+            "weekly pass  ➡️ 6600Ks\n50+50  ➡️ 4100Ks\n150+150  ➡️ 11000Ks\n"
+            "250+250  ➡️ 17000Ks\n500+500 ➡️  35000Ks\n\n"
+            "5➡️700Ks | 11➡️1100Ks | 22➡️2000Ks\n56➡️4200Ks | 112➡️7500Ks | 223➡️15000Ks\n"
+            "336➡️22000Ks | 570➡️35000Ks | 1163➡️69000Ks\n2398➡️140000Ks | 6042➡️330000Ks\n\n"
+            "Admin 👉 @khantzip"
+        )
+        bot.send_message(cid, text)
+
+    # --- Email (Real Mail) ---
+    elif call.data == "email":
+        bot.send_message(cid, "Email (real mail)\n1account 3000ks\nAvailable 100\n\nAdmin 👉 @khantzip")
+
+    # --- Outlook/Hotmail ---
+    elif call.data == "outlook":
+        bot.send_message(cid, "Outlook/Hotmail\n1 account 5000ks\nAvailable 30\nစိတ်ကြိုက်ရ\n\nAdmin 👉 @khantzip")
+
+    # --- Mbccs Account ---
+    elif call.data == "mbccs":
+        bot.send_message(cid, "လူကြီးမင်းရဲ့ ကိုယ်ပိုင်မိုင်တဲလ်ဖုန်းနံပါတ်နဲ့\n40000ks\n\nAdmin 👉 @khantzip")
+
+    # --- Tiktok Account (JP) ---
+    elif call.data == "tiktok":
+        bot.send_message(cid, "Tiktok account ( Japan / any countries) 5000ks\nWarranty 3months အကောင့်ဟောင်း 10000ks\n\nAdmin 👉 @khantzip")
 
 bot.polling(none_stop=True)
         
