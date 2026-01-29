@@ -1,7 +1,24 @@
+import os
+from flask import Flask
+import threading
 import telebot
 from telebot import types
 
-# --- Configuration ---
+# --- Render အတွက် Port ဖွင့်ပေးရန် (မဖြုတ်ပါနဲ့) ---
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run_flask():
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+
+# Flask ကို background မှာ run ထားမယ်
+threading.Thread(target=run_flask).start()
+
+# --- Bot Configuration ---
+# API Token ကို ဒီမှာ တိုက်ရိုက်ထည့်ပေးထားပါတယ်
 API_TOKEN = '8377346830:AAGVWfasXHc2AP3Q_z8VyT3WG0GyBer6Sh0'
 bot = telebot.TeleBot(API_TOKEN)
 ADMIN_LINK = "https://t.me/khantzip"
@@ -153,4 +170,4 @@ def callback_listener(call):
         bot.send_message(cid, "Tiktok account ( Japan / any countries) 5000ks\nWarranty 3months အကောင့်ဟောင်း 10000ks\n\nAdmin 👉 @khantzip")
 
 bot.polling(none_stop=True)
-        
+    
